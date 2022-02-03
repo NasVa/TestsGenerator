@@ -11,10 +11,10 @@ namespace TestsGenerator
         {
             string[] srcFiles = new string[]
             {
-                "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Example\\Class1.cs",
-                "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Example\\Class2.cs"
+                "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Example\\FirstFile.cs.cs",
+                "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Example\\SecondFile.cs.cs"
             };
-            string dstPath = "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Destiny";
+            string dstPath = "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Tests";
             int pipelineLimit = 2;
             new Conveyer().startConveyer(srcFiles, dstPath, pipelineLimit);
             Console.ReadLine();
