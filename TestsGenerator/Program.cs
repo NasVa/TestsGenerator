@@ -17,7 +17,6 @@ namespace TestsGenerator
             string dstPath = "C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Tests";
             int pipelineLimit = 2;
             new Conveyer().startConveyer(srcFiles, dstPath, pipelineLimit);
-            Console.ReadLine();
         }
     }
 }

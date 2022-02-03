@@ -49,16 +49,8 @@ namespace TestProject
         [Test]
         public void Test4()
         {
-            var writer = new StreamWriter ("C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\TestProject\\UnitTestClass.cs");
-            Dictionary<string, string> tests;
-            FileElement fileInfo = null;
-            string code = reader.ReadToEnd();
-            CodeParser codeParser = new CodeParser();
-            fileInfo = codeParser.GetFileElement(code);
-            Generator generator = new Generator();
-            tests = generator.GenerateTests(fileInfo);
-            //Console.WriteLine(tests.Keys);
-            writer.Write(tests.Keys);
+            MethodElement methodElement = new MethodElement("newMethod", "string", new Dictionary<string, string>());
+            Assert.AreEqual("string", methodElement.ReturnType);
         }
     }
 }
