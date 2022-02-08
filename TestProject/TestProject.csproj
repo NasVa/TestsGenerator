@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestsGeneratorLib\TestsGeneratorLib.csproj" />
+    <ProjectReference Include="..\TestsGenerator\TestsGenerator.csproj" />
   </ItemGroup>
 
 </Project>

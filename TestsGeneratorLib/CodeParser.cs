@@ -8,13 +8,14 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TestsGeneratorLib.FileElements;
 
+
 namespace TestsGeneratorLib
 {
     public class CodeParser
     {
         public FileElement GetFileElement(string code)
         {
-            CompilationUnitSyntax root = CSharpSyntaxTree.ParseText(code).GetCompilationUnitRoot();
+            CompilationUnitSyntax root = CSharpSyntaxTree.ParseText(code).GetCompilationUnitRoot(); 
             var classes = new List<ClassElement>();
             foreach (ClassDeclarationSyntax classDeclaration in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
             {
@@ -32,19 +33,9 @@ namespace TestsGeneratorLib
                 parameters.Add(parameter.Identifier.Text, parameter.Type.ToString());
             }
 
-            return new MethodElement(method.Identifier.ValueText, method.ReturnType.ToString(), parameters);
+            return new MethodElement(method.Identifier.ValueText);
         }
 
-        private ConstructorElement GetConstructorElement(ConstructorDeclarationSyntax constructor)
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            foreach (var parameter in constructor.ParameterList.Parameters)
-            {
-                parameters.Add(parameter.Identifier.Text, parameter.Type.ToString());
-            }
-
-            return new ConstructorElement(constructor.Identifier.ValueText, parameters);
-        }
 
         private ClassElement GetClassElement(ClassDeclarationSyntax classDeclaration)
         {
@@ -58,7 +49,6 @@ namespace TestsGeneratorLib
             foreach (var constructor in classDeclaration.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Where((constructorDeclaration) => constructorDeclaration.Modifiers.Any((modifier) => modifier.IsKind(SyntaxKind.PublicKeyword))))
             {
                 Console.WriteLine(constructor.Identifier);
-                constructors.Add(GetConstructorElement(constructor));
             }
 
             return new ClassElement(classDeclaration.Identifier.ValueText, methods, constructors);

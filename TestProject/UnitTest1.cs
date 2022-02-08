@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TestsGenerator;
 using TestsGeneratorLib;
 using TestsGeneratorLib.FileElements;
 
@@ -17,14 +18,14 @@ namespace TestProject
         }
 
         [Test]
-        public void Test1()
+        public void FileReadingTest()
         {
             string code = reader.ReadToEnd();
             Assert.NotNull(code);
         }
 
         [Test]
-        public void Test2()
+        public void CodeParserTest()
         {
             FileElement fileElement = null;
             string code = reader.ReadToEnd();
@@ -34,7 +35,7 @@ namespace TestProject
         }
 
         [Test]
-        public void Test3()
+        public void TestGeneratorTest()
         {
             Dictionary<string, string> tests;
             FileElement fileInfo = null;
@@ -46,11 +47,28 @@ namespace TestProject
             Assert.IsNotEmpty(tests);
         }
 
+
         [Test]
-        public void Test4()
+        public void ClassCountTest()
         {
-            MethodElement methodElement = new MethodElement("newMethod", "string", new Dictionary<string, string>());
-            Assert.AreEqual("string", methodElement.ReturnType);
+            CodeParser _codeParser = new CodeParser();
+            string[] firstClassStringArray = File.ReadAllLines("C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Example\\FirstFile.cs");
+            string _firstClassString = String.Join("\n", firstClassStringArray);
+            FileElement fileElement = _codeParser.GetFileElement(_firstClassString);
+            Console.WriteLine(_firstClassString);
+            Assert.AreEqual(2, fileElement.Classes.Count);
+        }
+
+        [Test]
+        public void CheckCountOfTests()
+        {
+            Generator _testGenerator = new Generator();
+            CodeParser _codeParser = new CodeParser();
+            string[] firstClassStringArray = File.ReadAllLines("C:\\Users\\Анастасия\\source\\repos\\TestsGenerator\\Example\\FirstFile.cs");
+            string _firstClassString = String.Join("\n", firstClassStringArray);
+            FileElement fileElement = _codeParser.GetFileElement(_firstClassString);
+            Dictionary<string, string> tests = _testGenerator.GenerateTests(fileElement);
+            Assert.AreEqual(2, tests.Count);
         }
     }
 }

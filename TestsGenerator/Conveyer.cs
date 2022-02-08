@@ -3,12 +3,14 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using TestsGeneratorLib;
+using System;
+using System.Threading;
 
-namespace TestGenerator
+namespace TestsGenerator
 {
     public class Conveyer
     {
-        public Task startConveyer(string[] srcFiles, string dstPath, int pipelineLimit)
+        public async Task startConveyer(string[] srcFiles, string dstPath, int pipelineLimit)
         {
             Directory.CreateDirectory(dstPath);
 
@@ -18,6 +20,8 @@ namespace TestGenerator
                 {
                     using (var reader = new StreamReader(path))
                     {
+                        Thread.Sleep(1000);
+                        Console.WriteLine("1");
                         return await reader.ReadToEndAsync();
                     }
                 },
@@ -29,6 +33,7 @@ namespace TestGenerator
                 async sourceCode =>
                 {
                     var fileInfo = await Task.Run(() => new CodeParser().GetFileElement(sourceCode));
+                    Console.WriteLine("2");
                     return await Task.Run(() => new Generator().GenerateTests(fileInfo));
                 },
                 new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = pipelineLimit }
@@ -36,16 +41,17 @@ namespace TestGenerator
 
             var writeTests = new ActionBlock<KeyValuePair<string, string>>
             (
-                async fileNameCodePair =>
-                {
-
-                    using (var writer = new StreamWriter(dstPath + '\\' + fileNameCodePair.Key + ".cs"))
-                    {
-                        await writer.WriteAsync(fileNameCodePair.Value);
-                    }
-                },
+                 async fileNameCodePair =>
+                 {
+                     using (var writer = new StreamWriter(dstPath + '\\' + fileNameCodePair.Key + ".cs"))
+                     {
+                         Console.WriteLine("3");
+                         await writer.WriteAsync(fileNameCodePair.Value);
+                     }
+                 },
                 new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = pipelineLimit }
             );
+
 
             getSrcFiles.LinkTo(generateTests, new DataflowLinkOptions { PropagateCompletion = true });
             generateTests.LinkTo(writeTests, new DataflowLinkOptions { PropagateCompletion = true });
@@ -55,7 +61,7 @@ namespace TestGenerator
             }
 
             getSrcFiles.Complete();
-            return writeTests.Completion;
+            await writeTests.Completion;
         }
     }
 }
